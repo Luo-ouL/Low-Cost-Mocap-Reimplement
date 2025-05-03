@@ -1,0 +1,14 @@
+# Ignore Python cache files
+__pycache__/
+
+# Ignore VSCode workspace settings
+.vscode/
+
+# Ignore some folders
+extrinsic/camera_0/
+extrinsic/camera_1/
+extrinsic/camera_2/
+esp32_sender/
+!esp32_sender/src/
+esp32_receiver/
+!esp32_receiver/src
