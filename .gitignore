@@ -8,7 +8,9 @@ __pycache__/
 extrinsic/camera_0/
 extrinsic/camera_1/
 extrinsic/camera_2/
-esp32_sender/
+esp32_sender/*
 !esp32_sender/src/
-esp32_receiver/
-!esp32_receiver/src
+!esp32_sender/src/**
+esp32_receiver/*
+!esp32_receiver/src/
+!esp32_receiver/src/**
