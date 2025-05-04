@@ -5,9 +5,9 @@ __pycache__/
 .vscode/
 
 # Ignore some folders
-extrinsic/camera_0/
-extrinsic/camera_1/
-extrinsic/camera_2/
+computer_code/extrinsic/camera_0/
+computer_code/extrinsic/camera_1/
+computer_code/extrinsic/camera_2/
 esp32_sender/*
 !esp32_sender/src/
 !esp32_sender/src/**
