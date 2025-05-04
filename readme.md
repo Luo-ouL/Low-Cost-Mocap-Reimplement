@@ -1,7 +1,7 @@
 # First of all
-This is a reimplement of [Joshua Bird's repository](https://github.com/jyjblrd/Low-Cost-Mocap)  
-It might be considered an easier version, since the React frontend has been replaced with a PyQt frontend, and the no-cv-sfm branch is used.  
-There is a [YouTube video](https://youtu.be/QF4qJRMAZwg) demonstrating the drone's hover and the use of the PyQtFrontend.
+&nbsp;&nbsp;&nbsp;&nbsp;This is a reimplement of [Joshua Bird's repository](https://github.com/jyjblrd/Low-Cost-Mocap)  
+&nbsp;&nbsp;&nbsp;&nbsp;It might be considered an easier version, since the React frontend has been replaced with a PyQt frontend, and the no-cv-sfm branch is used.  
+&nbsp;&nbsp;&nbsp;&nbsp;There is a [YouTube video](https://youtu.be/QF4qJRMAZwg) demonstrating the drone's hover and the use of the PyQtFrontend.
 
 # What's changed?
 (1) I build a PyQtFrontend instead of using ReactFrontend.
@@ -26,15 +26,16 @@ There is a [YouTube video](https://youtu.be/QF4qJRMAZwg) demonstrating the drone
 ![PyQtFrontend](pictures/PyQtFrontend.png)
 (1) The upper part of the UI displays the video streams from the three cameras. The lower left shows the positioning results in the world coordinate frame — a drone lying on the ground (x-y plane), with a green line indicating its heading. The remaining area is the control module.  
 (2) You can see there are many pushButton and lineEdit widgets. We need to fill in the required values and click the corresponding buttons; the frontend will then send the data (such as setpoints, trim values, ground effect compensation, PID parameters, and trajectory) to the drone, as shown in the YouTube video.  
-To make the drone hover, we first need to calibrate the yaw, since the drone does not know its initial heading. Then, we must check the locate_drones_on option so that positioning data is sent to the drone. After that, we send the setpoint to the drone, and finally, click the Arm button to arm the drone.  
-To use the trajectory tracking module, for example, we input waypoints in the format {x, y, z, yaw}, like this: 0 0 0.2 0\n0.3 0 0.2 0.6\n0.3 0.3 0.2 1.2. Then, we specify the expected velocity or the spacing between consecutive points, e.g., 0.1. Based on that, a sequence of intermediate setpoints with fixed spacing will be generated. Finally, we click the trajectory_on button to start trajectory tracking — meaning the setpoints will be sent one by one, each after the previous one is reached.  
-By the way, the Test Accuracy button might be a bit confusing: when you click it and exactly two points are detected, the terminal will output the distance between them. You can use this to evaluate the positioning accuracy by comparing the measured distance with the actual physical distance.
+&nbsp;&nbsp;&nbsp;&nbsp;To make the drone hover, we first need to calibrate the yaw, since the drone does not know its initial heading. Then, we must check the locate_drones_on option so that positioning data is sent to the drone. After that, we send the setpoint to the drone, and finally, click the Arm button to arm the drone.  
+&nbsp;&nbsp;&nbsp;&nbsp;To use the trajectory tracking module, for example, we input waypoints in the format {x, y, z, yaw}, like this: 0 0 0.2 0\n0.3 0 0.2 0.6\n0.3 0.3 0.2 1.2. Then, we specify the expected velocity or the spacing between consecutive points, e.g., 0.1. Based on that, a sequence of intermediate setpoints with fixed spacing will be generated. Finally, we click the trajectory_on button to start trajectory tracking — meaning the setpoints will be sent one by one, each after the previous one is reached.  
+&nbsp;&nbsp;&nbsp;&nbsp;By the way, the Test Accuracy button might be a bit confusing: when you click it and exactly two points are detected, the terminal will output the distance between them. You can use this to evaluate the positioning accuracy by comparing the measured distance with the actual physical distance.
 
 # What is the reimplement's flaw?
 (1) Locate about more than 6(approximately) points is unstable, probably due to the point correlation algorithm or the camera calibration's bad accuracy.![9 points situation for example](pictures/9points.png)
-In fact, when there are only a few points, the positioning accuracy can reach millimeter-level. However, when there are many points, mismatches tend to occur—since we need to match image points with epipolar lines—leading to sudden jumps due to ambiguous matches. This instability can be fatal for drone localization.  
-(2) It cannot locate and control two or more drones at the same time. In fact, controlling two drones is possible by adding a Kalman Filter (which essentially uses the previous state to predict the next one, and then uses the predicted state to help resolve multiple drone matches). However, locating three or more drones to build a swarm is not feasible due to the limited positioning accuracy of this reimplementation. Therefore, I decided not to implement the Kalman Filter or support multiple drones.
+&nbsp;&nbsp;&nbsp;&nbsp;In fact, when there are only a few points, the positioning accuracy can reach millimeter-level. However, when there are many points, mismatches tend to occur—since we need to match image points with epipolar lines—leading to sudden jumps due to ambiguous matches. This instability can be fatal for drone localization.  
+(2) It cannot locate and control two or more drones at the same time. In fact, controlling two drones is possible by adding a Kalman Filter (which essentially uses the previous state to predict the next one, and then uses the predicted state to help resolve multiple drone matches).  
+&nbsp;&nbsp;&nbsp;&nbsp;However, locating three or more drones to build a swarm is not feasible due to the limited positioning accuracy of this reimplementation. Therefore, I decided not to implement the Kalman Filter or support multiple drones.
 
 # Finally
-The origin project is really amazing and I've learned so much from it.
-Please kindly excuse any awkward expressions due to my limited English, and also forgive any bugs in the code as I’m still improving my programming skills.
+The origin project is really amazing and I've learned so much from it.  
+Please forgive any bugs in the code as I’m still improving my programming skills.
