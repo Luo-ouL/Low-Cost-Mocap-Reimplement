@@ -50,9 +50,8 @@ for _, cam_idx in enumerate(camera_indices):
 i = 0
 while i < num_image_point_pairs:
     input(f"Press enter to capture number{i} image\n")
-    for _ in range(1):
+    for _ in range(5):
         frames = cameras.camera_read()
-    frames = cameras.camera_read()
     image_point_0 = cameras.find_dot(frames[0])[1]
     image_point_1 = cameras.find_dot(frames[1])[1]
     print(image_point_0, image_point_1)
@@ -141,9 +140,8 @@ scale_coef = []
 i = 0
 while i < num_scale_coef:
     input(f"Press enter to capture image{i} for the determination of t(2 infrared points are needed).\n")
-    for _ in range(1):
+    for _ in range(5):
         frames = cameras.camera_read()
-    frames = cameras.camera_read()
     image_point_0 = cameras.find_dot(frames[0])[1]
     image_point_1 = cameras.find_dot(frames[1])[1]
     if len(image_point_0) == 2 and len(image_point_1) == 2:

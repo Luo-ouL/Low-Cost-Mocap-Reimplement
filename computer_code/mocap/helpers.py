@@ -50,7 +50,7 @@ class Cameras:
             print(f"Real height: {CAP_PROP_FRAME_HEIGHT}")
             print(f"Real fps: {CAP_PROP_FPS}")
         
-        self.skipped_frames = 2
+        self.skipped_frames = 0
 
     def camera_read(self):
         frames = []
@@ -266,7 +266,6 @@ Brief: after given a rough estimate from "epipolar geometry",
 Params: 
     image_points: image_points in "triangulate_points" function
     camera_poses: camera_poses in "triangulate_points" function
-    socketio: used to communicate with frontend, but temporarily not used
 Retval: camera_poses that's optimized
 """
 def bundle_adjustment(image_points, camera_poses):
@@ -274,42 +273,31 @@ def bundle_adjustment(image_points, camera_poses):
 
     def params_to_camera_poses(params):
         # camera1: as relative/world coordinate
-        focal_distances = []
-        num_cameras = int((params.size-1)/7)+1
+        num_cameras = int(params.size/6)+1
         camera_poses = [{
             "R": np.eye(3),
             "t": np.array([0,0,0], dtype=np.float32)
         }]
-        focal_distances.append(params[0])
-        # camera2,3,4
+        # camera2,3,4...
         for i in range(0, num_cameras-1):
-            focal_distances.append(params[i*7+1])
             camera_poses.append({
-                "R": Rotation.as_matrix(Rotation.from_rotvec(params[i*7+2 : i*7+3+2])),
-                "t": params[i*7+3+2 : i*7+6+2]
+                "R": Rotation.as_matrix(Rotation.from_rotvec(params[i*6 : i*6+3])),
+                "t": params[i*6+3 : i*6+6]
             })
 
-        return camera_poses, focal_distances
+        return camera_poses
 
     def residual_function(params):
-        camera_poses, focal_distances = params_to_camera_poses(params)
-        for i in range(0, len(camera_poses)):
-            intrinsic = cameras.get_camera_params(i)["intrinsic_matrix"]
-            intrinsic[0, 0] = focal_distances[i]
-            intrinsic[1, 1] = focal_distances[i]
-            # cameras.set_camera_params(i, intrinsic)
+        camera_poses = params_to_camera_poses(params)
         object_points = triangulate_points(image_points, camera_poses)
         errors = calculate_reprojection_errors(image_points, object_points, camera_poses)
         errors = errors.astype(np.float32)
 
         return errors
 
-    focal_distance = cameras.get_camera_params(0)["intrinsic_matrix"][0, 0]
-    init_params = np.array([focal_distance])
+    init_params = np.array([])
     for i, camera_pose in enumerate(camera_poses[1:]):
         rot_vec = Rotation.as_rotvec(Rotation.from_matrix(camera_pose["R"])).flatten()
-        focal_distance = cameras.get_camera_params(i)["intrinsic_matrix"][0,0]
-        init_params = np.concatenate([init_params, [focal_distance]])
         init_params = np.concatenate([init_params, rot_vec])
         init_params = np.concatenate([init_params, camera_pose["t"].flatten()])
 
@@ -318,7 +306,7 @@ def bundle_adjustment(image_points, camera_poses):
         residual_function, init_params, verbose=2, loss="cauchy", ftol=1E-4
     )
 
-    return params_to_camera_poses(res.x)[0]
+    return params_to_camera_poses(res.x)
 
 def find_point_correspondance_and_object_points(image_points, camera_poses, frames):
     cameras = Cameras.instance()

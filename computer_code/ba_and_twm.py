@@ -45,8 +45,8 @@ for _, cam_idx in enumerate(camera_indices):
 i = 0
 while i < num_image_point_pairs:
     input(f"Press enter to capture number{i} images.\n")
-    frames = cameras.camera_read()
-
+    for _ in range(5):
+        frames = cameras.camera_read()
     images_points = [[] for _ in range(cameras.num_cameras)]
     for j in range(cameras.num_cameras):
         images_points[j] = cameras.find_dot(frames[j])[1]
@@ -89,7 +89,8 @@ print("Bundle adjustment complete")
 ## Establish world coordinate
 while True:
     input(f"Press enter to capture image for acquiring world coordinate.(3 infrared points are needed)\n")
-    frames = cameras.camera_read()
+    for _ in range(5):
+        frames = cameras.camera_read()
     image_point_0 = cameras.find_dot(frames[0])[1]
     image_point_1 = cameras.find_dot(frames[1])[1]
     image_point_2 = cameras.find_dot(frames[2])[1]
